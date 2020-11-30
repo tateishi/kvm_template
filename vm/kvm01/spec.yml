@@ -1,0 +1,11 @@
+spec:
+  name: kvm01
+  type: small
+  base: bionic-server-cloudimg-amd64.img
+  nic:
+    name: ens2
+    address: 192.168.122.11/24
+    gateway: 192.168.122.1
+    nameservers:
+      search: [ example.com ]
+      addresses: [ 192.168.122.1 ]

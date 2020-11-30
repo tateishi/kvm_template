@@ -1,0 +1,54 @@
+{# -*- mode: yaml -*- -#}
+kvm:
+  server:
+    name: {{ name }}
+    cpus: {{ cpus }}
+    memory: {{ memory }}
+
+    arch: x86_64
+    os_type: linux
+    os_variant: ubuntu18.04
+
+    disks:
+      - name: disk1
+        size: {{ disk }}
+        type: qcow2
+        base: {{ base }}
+
+    {%- if nic %}
+
+    nics:
+      - name: {{ nic.name }}
+        interface: bridge:virbr0
+        static: true
+        addresses: [ {{ nic.address }} ]
+        gateway: {{ nic.gateway }}
+        nameservers:
+          search:
+            {%- for domain in nic.nameservers.search %}
+            - {{ domain }}
+            {%- endfor %}
+          addresses:
+            {%- for ns in nic.nameservers.addresses %}
+            - {{ ns }}
+            {%- endfor %}
+    {%- endif %}
+
+    cidata:
+      hostname: {{ name }}
+      filename: userdata.iso
+
+    {%- if packages %}
+
+    packages:
+    {%- for package in packages %}
+      - {{ package }}
+    {%- endfor %}
+    {%- endif %}
+
+    {% if http_proxy %}
+    http_proxy: {{ http_proxy }}
+    {% endif %}
+    {% if https_proxy %}
+    https_proxy: {{ https_proxy }}
+    {% endif %}

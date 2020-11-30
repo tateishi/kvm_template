@@ -1,0 +1,49 @@
+{# -*- mode: yaml -*- -#}
+#cloud-config
+hostname: {{ server.cidata.hostname }}
+timezone: Asia/Tokyo
+locale: ja_JP.UTF-8
+
+password: ubuntu
+chpasswd: { expire: false}
+ssh_pwauth: True
+
+users:
+  - default:
+  - name: ubuntu
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL937Fy0LUSWpMV7SrIN+P1H4TZLTL4PdY/rtKXxM6IP thkadmin@system6078
+
+write_files:
+  - content: |
+      [Service]
+      Environment=http_proxy={{ server.http_proxy }}
+      Environment=https_proxy={{ server.https_proxy }}
+    path: /etc/systemd/system/snapd.service.d/override.conf
+
+  - content: |
+      [Service]
+      Environment=http_proxy={{ server.http_proxy }}
+      Environment=https_proxy={{ server.https_proxy }}
+    path: /etc/systemd/system/docker.service.d/override.conf
+
+  - content: |
+      [Service]
+      Environment=http_proxy={{ server.http_proxy }}
+      Environment=https_proxy={{ server.https_proxy }}
+    path: /etc/systemd/system/snap.docker.dockerd.service.d/override.conf
+
+apt:
+  http_proxy: {{ server.http_proxy }}
+  https_proxy: {{ server.https_proxy }}
+
+package_upgrade: true
+package_reboot_if_required: true
+
+{%- if server.packages %}
+
+packages:
+  {%- for package in server.packages %}
+  - {{ package }}
+  {%- endfor %}
+{%- endif %}

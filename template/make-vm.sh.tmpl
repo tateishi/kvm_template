@@ -1,0 +1,26 @@
+#! /bin/bash
+#-*- mode: bash -*-
+
+virt-install \
+    --name {{ server.name }} \
+    --memory {{ server.memory }} \
+    --vcpus {{ server.cpus }} \
+    --arch {{ server.arch }} \
+    --os-type {{ server.os_type }} \
+{%- if server.os_variant %}
+    --os-variant {{ server.os_variant }} \
+{%- endif %}
+    --hvm \
+    --virt-type kvm \
+    {%- for disk in server.disks %}
+    --file {{ disk.name }}.{{ disk.type }} \
+    {%- endfor %}
+    --cdrom {{ server.cidata.filename }} \
+    --boot hd \
+    {%- for nic in server.nics %}
+    --network {{ nic.interface }} \
+    {%- endfor %}
+    --graphics none \
+    --serial pty \
+    --console pty \
+    --autostart

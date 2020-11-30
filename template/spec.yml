@@ -1,0 +1,5 @@
+# -*- mode: yaml -*-
+spec:
+  name: bionic
+  type: small
+  base: bionic-server-cloudimg-amd64.img

@@ -1,0 +1,22 @@
+{# -*- mode: yaml -*- -#}
+version: 2
+ethernets:
+  {%- for nic in server.nics %}
+  {%- if nic.static %}
+  {{ nic.name }}:
+    addresses:
+      {%- for ip in nic.addresses %}
+      - {{ ip }}
+      {%- endfor %}
+    gateway4: {{ nic.gateway }}
+    nameservers:
+      search:
+        {%- for domain in nic.nameservers.search %}
+        - {{ domain }}
+        {%- endfor %}
+      addresses:
+        {%- for ns in nic.nameservers.addresses %}
+        - {{ ns }}
+        {%- endfor %}
+  {%- endif %}
+  {%- endfor %}

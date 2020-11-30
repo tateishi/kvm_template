@@ -1,0 +1,21 @@
+#! /bin/bash
+# -*- mode: bash -*-
+
+{%- for disk in server.disks %}
+{%- if disk.backing %}
+
+qemu-img create \
+         {%- if disk.base %}
+         -b ../../images/{{ disk.base }} \
+         {%- endif %}
+         -f {{ disk.type }} \
+         {{ disk.name }}.qcow2 \
+         {{ disk.size }}
+
+{%- else %}
+
+cp ../../images/{{ disk.base }} {{ disk.name }}.{{ disk.type }}
+qemu-img resize {{ disk.name }}.{{ disk.type }} {{ disk.size }}
+
+{%- endif %}
+{%- endfor %}

@@ -1,0 +1,8 @@
+#! /bin/bash
+# -*- mode: bash -*-
+
+genisoimage \
+    -output {{ server.cidata.filename }} \
+    -volid cidata \
+    -joliet -rock \
+    {user,meta}-data {%- if server.nics %} network-config {%- endif %}
